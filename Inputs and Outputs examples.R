@@ -50,67 +50,55 @@ ui <- fluidPage(
   verbatimTextOutput(outputId = "print1"),
   
   h2("Slider Input with Two Sliders"),
-  
-  sliderInput(inputId="year1",
-              label="Select Year",
-              min=1990,
-              max=1994,
-              value=c(1990,1994),
-              sep=""),  
+  sliderInput(inputId = "year1",
+              label = "Select Year",
+              min = 1990,
+              max = 1994,
+              value = c(1990, 1994),
+              sep = ""),  
   
   h2("Checkbox Input"),
-  
-  checkboxGroupInput(inputId="city1",
-                     label="Which City Do you Want to Display?",
-                     choices=cities,
-                     selected=cities),
-  
-  #####this tells the user interface that the output$["table"] will do here
+  checkboxGroupInput(inputId = "city1",
+                     label = "Which City Do you Want to Display?",
+                     choices = cities,
+                     selected = cities),
   
   h2("A standard table"),
-  
   tableOutput(outputId = "table1"),
-  #### matched with output$table1 <- renderTable(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year    <=input$year1[2]))
   
   h2("A data table"),
-  
   dataTableOutput(outputId = "table2"),
-  #### matched withoutput$table2 <- renderDataTable(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2]))
-  
+
   h2("A standard plot"),
-  
   plotOutput(outputId = "plot1"),
-  #### matched with output$plot1 <- renderPlot(ggplot(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2]),aes(x=var1,y=var2))+geom_point())
-  
   
   h2("A plotly plot"),
-  
   plotlyOutput(outputId = "plot2")
-  #### matched with output$plot2 <- renderPlotly(ggplot(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2]),aes(x=var1))+geom_histogram())
 )
 
 
-########write the server function that will generate the plots and tables to add to output
 
 server <- function(input, output) {
   
-  output$text_output<-renderText({input$text})
+  output$text_output <- renderText({input$text})
   
-  output$print1<-renderPrint({table(all_data$var1)})
+  output$print1 <- renderPrint({table(all_data$var1)})
   
   output$table1 <- renderTable({
-    filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2])})
+    dplyr::filter(all_data, city %in% input$city1 & year >= input$year1[1] & year <= input$year1[2])})
   
   output$table2 <- renderDataTable({
-    filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2])})
+    dplyr::filter(all_data, city %in% input$city1 & year >= input$year1[1] & year <= input$year1[2])})
   
   output$plot1 <- renderPlot({
-    ggplot(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2]),aes(x=var1,y=var2))+
-      geom_point()})
+    ggplot2::ggplot(dplyr::filter(all_data, city %in% input$city1 & year >= input$year1[1] & year <= input$year1[2]),
+                    mapping = aes(x = var1, y = var2)) +
+      ggplot2::geom_point()})
   
   output$plot2 <- renderPlotly({
-    ggplot(filter(all_data,city %in% input$city1 & year>=input$year1[1] & year<=input$year1[2]),aes(x=var1))+
-      geom_histogram()})
+    ggplot2::ggplot(dplyr::filter(all_data, city %in% input$city1 & year >= input$year1[1] & year <= input$year1[2]),
+                    mapping = aes(x = var1)) +
+      ggplot2::geom_histogram()})
 }
 
 # Run the application 
