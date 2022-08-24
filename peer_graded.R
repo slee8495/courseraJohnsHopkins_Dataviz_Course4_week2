@@ -3,10 +3,7 @@ library(tidyverse)
 library(plotly)
 library(DT)
 
-# reference code
-# https://github.com/phillyo/intelligentsia/blob/master/ui.R
-
-# https://phillyo.shinyapps.io/intelligentsia/?_ga=2.51242282.2006853199.1661363042-153102189.1641594202
+# reference code: Pages.R
 
 #####Import Data
 
