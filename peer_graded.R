@@ -11,6 +11,9 @@ dat<-read_csv(url("https://www.dropbox.com/s/uhfstf6g36ghxwp/cces_sample_courser
 dat<- dat %>% select(c("pid7","ideo5","newsint","gender","educ","CC18_308a","region"))
 dat<-drop_na(dat)
 
+dat %>% 
+  dplyr::group_by(ideo5) %>% 
+  dplyr::count(pid7) -> dat_2
 
 #####Make your app
 
@@ -20,7 +23,7 @@ ui <-
     tabPanel("Page 1",
              sliderInput(
                inputId = "slider",
-               label = "Select Five Point Ideology (1=Very liberal, 5=Very conservative",
+               label = "Select Five Point Ideology (1=Very liberal, 5=Very conservative)",
                min = 1,
                max = 5,
                value = 3,
@@ -37,7 +40,16 @@ ui <-
   
   
 server<-function(input,output){
-    
+    output$plot1 <- renderPlot({
+      
+      plot_dat <- dplyr::filter(dat_2, ideo5 == input$slider)
+      
+      ggplot2::ggplot(plot_dat, mapping = aes(x = pid7, y = n)) +
+        ggplot2::geom_bar(stat = "identity") +
+        ggplot2::coord_cartesian(ylim = c(0, 100), xlim = c(0, 8)) +
+        ggplot2::labs(x = "7 Point Party ID, 1 = Very D, 7 = Very R",
+                      y = "Count")
+    })
 
     
   } 
