@@ -21,6 +21,7 @@ ui <-
   ui <- navbarPage(
     title="My Application",
     tabPanel("Page 1",
+             sidebarPanel(
              sliderInput(
                inputId = "slider",
                label = "Select Five Point Ideology (1=Very liberal, 5=Very conservative)",
@@ -28,15 +29,22 @@ ui <-
                max = 5,
                value = 3,
                sep= "",
-               width = 500),
-             plotOutput("plot1")
-    ),
+               width = 500)),
+             mainPanel(
+               tabsetPanel(
+                 id = "tab1",
+                 tabPanel(
+                   title = "tab1",
+             plotOutput("plot1")),
+             tabPanel(
+               title = "tab2",
+               plotOutput("plot2")
+             ))
+    )),
     tabPanel("Page 2"),
     tabPanel("Page 3")
   )
 
-  
-  
   
   
 server<-function(input,output){
