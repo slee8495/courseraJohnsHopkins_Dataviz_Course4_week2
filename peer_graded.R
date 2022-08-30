@@ -3,8 +3,6 @@ library(tidyverse)
 library(plotly)
 library(DT)
 
-# reference code: Pages.R
-
 ##### Import Data
 
 dat<-read_csv(url("https://www.dropbox.com/s/uhfstf6g36ghxwp/cces_sample_coursera.csv?raw=1"))
@@ -57,7 +55,13 @@ ui <-
              mainPanel(
                plotOutput("plot3")
              )),
-    tabPanel("Page 3")
+    tabPanel("Page 3",
+             sidebarPanel(
+               selectInput(inputId = "select", label = "Select Region", choices = c(1:4))
+             ),
+             mainPanel(
+              dataTableOutput("table") 
+             ))
   )
 
   
@@ -93,6 +97,12 @@ server<-function(input,output){
         ggplot2::geom_jitter() +
         ggplot2::geom_smooth(method = "lm")
         
+    })
+    
+    output$table <- renderDataTable({
+      table <- dat %>% filter(region == input$select)
+      
+      table
     })
     
   } 
