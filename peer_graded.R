@@ -20,6 +20,10 @@ dat %>%
   dplyr::group_by(ideo5) %>% 
   dplyr::count(CC18_308a) -> dat_3
 
+
+dat %>% 
+  dplyr::mutate(across(c(gender, pid7, educ), as.factor)) -> dat_4
+
 ##### Make your app
 
 ui <- 
@@ -46,7 +50,13 @@ ui <-
                plotOutput("plot2")
              ))
     )),
-    tabPanel("Page 2"),
+    tabPanel("Page 2",
+             sidebarPanel(
+               checkboxGroupInput("check", "Select Gender", c(1, 2))
+             ),
+             mainPanel(
+               plotOutput("plot3")
+             )),
     tabPanel("Page 3")
   )
 
@@ -75,6 +85,15 @@ server<-function(input,output){
                       y = "count")
     })
 
+    output$plot3 <- renderPlot({
+      
+      plot_dat_3 <- dplyr::filter(dat_4, gender == input$check)
+      
+      ggplot2::ggplot(dat, mapping = aes(x = educ, y = pid7))  +
+        ggplot2::geom_jitter() +
+        ggplot2::geom_smooth(method = "lm")
+        
+    })
     
   } 
 
